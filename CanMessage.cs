@@ -1,15 +1,11 @@
 ﻿using Peak.Can.Basic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PCanMiniView
 {
     internal class CanMessage
     {
         private PcanMessage msg;
+        private ulong msgPrevTime;
         private ulong msgTime;
         private int msgIdx;
         private int msgCount;
@@ -17,6 +13,7 @@ namespace PCanMiniView
         public CanMessage(PcanMessage msg, ulong msgTime, int msgIdx)
         {
             this.msg = msg;
+            this.msgPrevTime = msgTime;
             this.msgTime = msgTime;
             this.msgIdx = msgIdx;
             this.msgCount = 1;
@@ -25,6 +22,7 @@ namespace PCanMiniView
         public void UpdateMsg(PcanMessage msg, ulong msgTimeStamp)
         {
             this.msg = msg;
+            this.msgPrevTime = this.msgTime;
             this.msgTime = msgTimeStamp;
             msgCount++;
         }
@@ -32,6 +30,11 @@ namespace PCanMiniView
         public PcanMessage Msg
         {
             get { return msg; }
+        }
+
+        public ulong MsgPrevTime
+        {
+            get { return msgPrevTime; }
         }
 
         public ulong MsgTime

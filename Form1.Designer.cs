@@ -45,8 +45,13 @@
             baudRateTxBox = new TextBox();
             msgSendBtn = new Button();
             writeGroupBox = new GroupBox();
-            wIDTxBox = new TextBox();
+            wDataLabel = new Label();
+            wLenLabel = new Label();
+            wDataTxBox = new TextBox();
+            wIsExtendedCkBox = new CheckBox();
+            wLenTxBox = new TextBox();
             wIDLabel = new Label();
+            wIDTxBox = new TextBox();
             writeGroupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,7 +60,7 @@
             msgViewList.Columns.AddRange(new ColumnHeader[] { colHMsgType, colHMshId, colHMsgLen, colHMsgData, colHMsgTimeStamp, colHMsgCnt });
             msgViewList.Location = new Point(12, 78);
             msgViewList.Name = "msgViewList";
-            msgViewList.Size = new Size(486, 142);
+            msgViewList.Size = new Size(547, 142);
             msgViewList.TabIndex = 0;
             msgViewList.UseCompatibleStateImageBehavior = false;
             msgViewList.View = View.Details;
@@ -77,11 +82,11 @@
             // colHMsgData
             // 
             colHMsgData.Text = "데이터";
-            colHMsgData.Width = 150;
+            colHMsgData.Width = 180;
             // 
             // colHMsgTimeStamp
             // 
-            colHMsgTimeStamp.Text = "타임스탬프";
+            colHMsgTimeStamp.Text = "사이클 타임";
             colHMsgTimeStamp.Width = 75;
             // 
             // colHMsgCnt
@@ -135,30 +140,75 @@
             // 
             msgSendBtn.Location = new Point(6, 201);
             msgSendBtn.Name = "msgSendBtn";
-            msgSendBtn.Size = new Size(466, 23);
+            msgSendBtn.Size = new Size(527, 23);
             msgSendBtn.TabIndex = 5;
             msgSendBtn.Text = "메시지 보내기";
             msgSendBtn.UseVisualStyleBackColor = true;
-            msgSendBtn.Click += msgSendBtn_Click;
+            msgSendBtn.Click += MsgSendBtn_Click;
             // 
             // writeGroupBox
             // 
+            writeGroupBox.Controls.Add(wDataLabel);
+            writeGroupBox.Controls.Add(wLenLabel);
+            writeGroupBox.Controls.Add(wDataTxBox);
+            writeGroupBox.Controls.Add(wIsExtendedCkBox);
+            writeGroupBox.Controls.Add(wLenTxBox);
             writeGroupBox.Controls.Add(wIDLabel);
             writeGroupBox.Controls.Add(wIDTxBox);
             writeGroupBox.Controls.Add(msgSendBtn);
             writeGroupBox.Location = new Point(12, 226);
             writeGroupBox.Name = "writeGroupBox";
-            writeGroupBox.Size = new Size(486, 230);
+            writeGroupBox.Size = new Size(547, 230);
             writeGroupBox.TabIndex = 6;
             writeGroupBox.TabStop = false;
             writeGroupBox.Text = "메시지 보내기";
             // 
-            // wIDTxBox
+            // wDataLabel
             // 
-            wIDTxBox.Location = new Point(37, 27);
-            wIDTxBox.Name = "wIDTxBox";
-            wIDTxBox.Size = new Size(100, 23);
-            wIDTxBox.TabIndex = 6;
+            wDataLabel.AutoSize = true;
+            wDataLabel.Location = new Point(12, 83);
+            wDataLabel.Name = "wDataLabel";
+            wDataLabel.Size = new Size(43, 15);
+            wDataLabel.TabIndex = 12;
+            wDataLabel.Text = "데이터(HEX)";
+            // 
+            // wLenLabel
+            // 
+            wLenLabel.AutoSize = true;
+            wLenLabel.Location = new Point(12, 59);
+            wLenLabel.Name = "wLenLabel";
+            wLenLabel.Size = new Size(31, 15);
+            wLenLabel.TabIndex = 11;
+            wLenLabel.Text = "길이";
+            // 
+            // wDataTxBox
+            // 
+            wDataTxBox.Location = new Point(6, 101);
+            wDataTxBox.Multiline = true;
+            wDataTxBox.Name = "wDataTxBox";
+            wDataTxBox.PlaceholderText = "공백 포함해야함";
+            wDataTxBox.ReadOnly = true;
+            wDataTxBox.Size = new Size(527, 94);
+            wDataTxBox.TabIndex = 10;
+            // 
+            // wIsExtendedCkBox
+            // 
+            wIsExtendedCkBox.AutoSize = true;
+            wIsExtendedCkBox.Location = new Point(168, 29);
+            wIsExtendedCkBox.Name = "wIsExtendedCkBox";
+            wIsExtendedCkBox.Size = new Size(50, 19);
+            wIsExtendedCkBox.TabIndex = 9;
+            wIsExtendedCkBox.Text = "확장";
+            wIsExtendedCkBox.UseVisualStyleBackColor = true;
+            // 
+            // wLenTxBox
+            // 
+            wLenTxBox.Location = new Point(62, 56);
+            wLenTxBox.Name = "wLenTxBox";
+            wLenTxBox.Size = new Size(100, 23);
+            wLenTxBox.TabIndex = 8;
+            wLenTxBox.Text = "0";
+            wLenTxBox.TextChanged += WLenTxBox_TextChanged;
             // 
             // wIDLabel
             // 
@@ -169,11 +219,20 @@
             wIDLabel.TabIndex = 7;
             wIDLabel.Text = "ID";
             // 
+            // wIDTxBox
+            // 
+            wIDTxBox.Location = new Point(62, 27);
+            wIDTxBox.Name = "wIDTxBox";
+            wIDTxBox.Size = new Size(100, 23);
+            wIDTxBox.TabIndex = 6;
+            wIDTxBox.Text = "000";
+            wIDTxBox.TextChanged += wIDTxBox_TextChanged;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(520, 473);
+            ClientSize = new Size(578, 473);
             Controls.Add(baudRateTxBox);
             Controls.Add(baudRateLabel);
             Controls.Add(channelLabel);
@@ -183,6 +242,7 @@
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "PCanMiniView";
+            FormClosing += Form1_FormClosing;
             writeGroupBox.ResumeLayout(false);
             writeGroupBox.PerformLayout();
             ResumeLayout(false);
@@ -208,5 +268,10 @@
         private GroupBox writeGroupBox;
         private TextBox wIDTxBox;
         private Label wIDLabel;
+        private CheckBox wIsExtendedCkBox;
+        private TextBox wLenTxBox;
+        private TextBox wDataTxBox;
+        private Label wDataLabel;
+        private Label wLenLabel;
     }
 }
