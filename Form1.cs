@@ -7,28 +7,13 @@ namespace PCanMiniView
     public partial class Form1 : Form
     {
         private PcanChannel channel;
+        private Bitrate baudRate;
         private PcanStatus result;
         private readonly List<CanMessage> canMessages = new List<CanMessage>();
 
         public Form1()
         {
             InitializeComponent();
-
-            channel = PcanChannel.Usb01;
-            result = Api.Initialize(channel, Bitrate.Pcan250);
-
-            if (result != PcanStatus.OK)
-            {
-                Api.GetErrorText(result, out var errorText);
-                MessageBox.Show(errorText, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            channelTxBox.Text = channel.ToString();
-            baudRateTxBox.Text = Bitrate.Pcan250.ToString();
-
-            readTimer.Start();
-            viewTimer.Start();
-
         }
 
         private void ProcessMessage(PcanMessage msg, ulong msgTimeStamp = 0)
@@ -140,7 +125,7 @@ namespace PCanMiniView
             string writeData = wDataTxBox.Text;
             bool isExt = wIsExtendedCkBox.Checked;
 
-            if (IsBlank(writeID) || IsBlank(writeLEN) || IsBlank(writeData))
+            if (UtilityHelpers.IsBlank(writeID) || UtilityHelpers.IsBlank(writeLEN) || UtilityHelpers.IsBlank(writeData))
             {
                 MessageBox.Show("ID, 길이, 데이터를 입력해주세요.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -153,7 +138,7 @@ namespace PCanMiniView
         {
             int len = Convert.ToInt32(wLenTxBox.Text);
 
-            if (len <= 0 || IsBlank(wLenTxBox.Text))
+            if (len <= 0 || UtilityHelpers.IsBlank(wLenTxBox.Text))
             {
                 len = 0;
                 wLenTxBox.Text = "0";
@@ -194,11 +179,6 @@ namespace PCanMiniView
             }
         }
 
-        private static bool IsBlank(string str)
-        {
-            return string.IsNullOrWhiteSpace(str);
-        }
-
         // ID 범위에 맞게 변환
         // 11bit : 0x7FF
         // 29bit : 0x1FFFFFFF
@@ -217,6 +197,37 @@ namespace PCanMiniView
         private void wIDTxBox_TextChanged(object sender, EventArgs e)
         {
             wIDTxBox.Text = GetIDFromText(wIDTxBox.Text, wIsExtendedCkBox.Checked).ToString("X");
+        }
+
+        private void initBtn_Click(object sender, EventArgs e)
+        {
+            int selectedChannel = selectChennel.SelectedIndex;
+            int selectedBaudRate = selectBaudRate.SelectedIndex;
+
+            channel = UtilityHelpers.ToPcanChannel(selectedChannel);
+            baudRate = UtilityHelpers.ToBitrate(selectedBaudRate);
+
+            result = Api.Initialize(channel, baudRate);
+
+            if (result != PcanStatus.OK)
+            {
+                Api.GetErrorText(result, out var errorText);
+                MessageBox.Show("초기화가 실패했습니다. \n에러메시지: " + errorText, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Close();
+            }
+            else
+            {
+                channelTxBox.Text = channel.ToString();
+                baudRateTxBox.Text = baudRate.ToString();
+
+                selectBaudRate.Enabled = false;
+                selectChennel.Enabled = false;
+                initBtn.Enabled = false;
+                unInitBtn.Enabled = true;
+
+                readTimer.Start();
+                viewTimer.Start();
+            }
         }
     }
 }

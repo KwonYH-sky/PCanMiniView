@@ -39,10 +39,8 @@
             colHMsgCnt = new ColumnHeader();
             readTimer = new System.Windows.Forms.Timer(components);
             viewTimer = new System.Windows.Forms.Timer(components);
-            channelTxBox = new TextBox();
             channelLabel = new Label();
             baudRateLabel = new Label();
-            baudRateTxBox = new TextBox();
             msgSendBtn = new Button();
             writeGroupBox = new GroupBox();
             wDataLabel = new Label();
@@ -52,6 +50,12 @@
             wLenTxBox = new TextBox();
             wIDLabel = new Label();
             wIDTxBox = new TextBox();
+            initBtn = new Button();
+            selectChennel = new ComboBox();
+            selectBaudRate = new ComboBox();
+            channelTxBox = new TextBox();
+            baudRateTxBox = new TextBox();
+            unInitBtn = new Button();
             writeGroupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -87,7 +91,7 @@
             // colHMsgTimeStamp
             // 
             colHMsgTimeStamp.Text = "사이클 타임";
-            colHMsgTimeStamp.Width = 75;
+            colHMsgTimeStamp.Width = 80;
             // 
             // colHMsgCnt
             // 
@@ -101,14 +105,6 @@
             // viewTimer
             // 
             viewTimer.Tick += ViewTimer_Tick;
-            // 
-            // channelTxBox
-            // 
-            channelTxBox.Location = new Point(61, 25);
-            channelTxBox.Name = "channelTxBox";
-            channelTxBox.ReadOnly = true;
-            channelTxBox.Size = new Size(100, 23);
-            channelTxBox.TabIndex = 1;
             // 
             // channelLabel
             // 
@@ -127,14 +123,6 @@
             baudRateLabel.Size = new Size(74, 15);
             baudRateLabel.TabIndex = 3;
             baudRateLabel.Text = "Baud 레이트";
-            // 
-            // baudRateTxBox
-            // 
-            baudRateTxBox.Location = new Point(267, 25);
-            baudRateTxBox.Name = "baudRateTxBox";
-            baudRateTxBox.ReadOnly = true;
-            baudRateTxBox.Size = new Size(100, 23);
-            baudRateTxBox.TabIndex = 4;
             // 
             // msgSendBtn
             // 
@@ -168,7 +156,7 @@
             wDataLabel.AutoSize = true;
             wDataLabel.Location = new Point(12, 83);
             wDataLabel.Name = "wDataLabel";
-            wDataLabel.Size = new Size(43, 15);
+            wDataLabel.Size = new Size(73, 15);
             wDataLabel.TabIndex = 12;
             wDataLabel.Text = "데이터(HEX)";
             // 
@@ -186,7 +174,7 @@
             wDataTxBox.Location = new Point(6, 101);
             wDataTxBox.Multiline = true;
             wDataTxBox.Name = "wDataTxBox";
-            wDataTxBox.PlaceholderText = "공백 포함해야함";
+            wDataTxBox.PlaceholderText = "ex) 00 00 00 00";
             wDataTxBox.ReadOnly = true;
             wDataTxBox.Size = new Size(527, 94);
             wDataTxBox.TabIndex = 10;
@@ -228,11 +216,75 @@
             wIDTxBox.Text = "000";
             wIDTxBox.TextChanged += wIDTxBox_TextChanged;
             // 
+            // initBtn
+            // 
+            initBtn.Location = new Point(394, 24);
+            initBtn.Name = "initBtn";
+            initBtn.Size = new Size(75, 23);
+            initBtn.TabIndex = 7;
+            initBtn.Text = "초기화";
+            initBtn.UseVisualStyleBackColor = true;
+            initBtn.Click += initBtn_Click;
+            // 
+            // selectChennel
+            // 
+            selectChennel.DropDownStyle = ComboBoxStyle.DropDownList;
+            selectChennel.FormattingEnabled = true;
+            selectChennel.Items.AddRange(new object[] { "None", "Pci01", "Pci02", "Pci03", "Pci04", "Pci05", "Pci06", "Pci07", "Pci08", "Pci09", "Pci10", "Pci11", "Pci12", "Pci13", "Pci14", "Pci15", "Pci16", "Usb01", "Usb02", "Usb03", "Usb04", "Usb05", "Usb06", "Usb07", "Usb08", "Usb09", "Usb10", "Usb11", "Usb12", "Usb13", "Usb14", "Usb15", "Usb16", "Lan01", "Lan02", "Lan03", "Lan04", "Lan05", "Lan06", "Lan07", "Lan08", "Lan09", "Lan10", "Lan11", "Lan12", "Lan13", "Lan14", "Lan15", "Lan16" });
+            selectChennel.Location = new Point(49, 25);
+            selectChennel.Name = "selectChennel";
+            selectChennel.Size = new Size(121, 23);
+            selectChennel.TabIndex = 8;
+            selectChennel.SelectedIndex = 0;
+            // 
+            // selectBaudRate
+            // 
+            selectBaudRate.DropDownStyle = ComboBoxStyle.DropDownList;
+            selectBaudRate.FormattingEnabled = true;
+            selectBaudRate.Items.AddRange(new object[] { "Pcan1000", "Pcan800", "Pcan500", "Pcan250", "Pcan125", "Pcan47", "Pcan100", "Pcan50", "Pcan20", "Pcan10", "Pcan5", "Pcan83", "Pcan33", "Pcan95" });
+            selectBaudRate.Location = new Point(267, 25);
+            selectBaudRate.Name = "selectBaudRate";
+            selectBaudRate.Size = new Size(121, 23);
+            selectBaudRate.TabIndex = 9;
+            selectBaudRate.SelectedIndex = 0;
+            // 
+            // channelTxBox
+            // 
+            channelTxBox.Location = new Point(61, 25);
+            channelTxBox.Name = "channelTxBox";
+            channelTxBox.ReadOnly = true;
+            channelTxBox.Size = new Size(100, 23);
+            channelTxBox.TabIndex = 1;
+            channelTxBox.Visible = false;
+            // 
+            // baudRateTxBox
+            // 
+            baudRateTxBox.Location = new Point(267, 25);
+            baudRateTxBox.Name = "baudRateTxBox";
+            baudRateTxBox.ReadOnly = true;
+            baudRateTxBox.Size = new Size(100, 23);
+            baudRateTxBox.TabIndex = 4;
+            baudRateTxBox.Visible = false;
+            // 
+            // unInitBtn
+            // 
+            unInitBtn.Enabled = false;
+            unInitBtn.Location = new Point(484, 24);
+            unInitBtn.Name = "unInitBtn";
+            unInitBtn.Size = new Size(75, 23);
+            unInitBtn.TabIndex = 10;
+            unInitBtn.Text = "언초기화";
+            unInitBtn.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(578, 473);
+            Controls.Add(unInitBtn);
+            Controls.Add(selectBaudRate);
+            Controls.Add(selectChennel);
+            Controls.Add(initBtn);
             Controls.Add(baudRateTxBox);
             Controls.Add(baudRateLabel);
             Controls.Add(channelLabel);
@@ -254,10 +306,8 @@
         private ListView msgViewList;
         private System.Windows.Forms.Timer readTimer;
         private System.Windows.Forms.Timer viewTimer;
-        private TextBox channelTxBox;
         private Label channelLabel;
         private Label baudRateLabel;
-        private TextBox baudRateTxBox;
         private ColumnHeader colHMsgType;
         private ColumnHeader colHMshId;
         private ColumnHeader colHMsgData;
@@ -273,5 +323,11 @@
         private TextBox wDataTxBox;
         private Label wDataLabel;
         private Label wLenLabel;
+        private Button initBtn;
+        private ComboBox selectChennel;
+        private ComboBox selectBaudRate;
+        private TextBox channelTxBox;
+        private TextBox baudRateTxBox;
+        private Button unInitBtn;
     }
 }
