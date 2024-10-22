@@ -30,7 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            msgViewList = new ListView();
+            msgViewList = new ListViewNF();
             colHMsgType = new ColumnHeader();
             colHMshId = new ColumnHeader();
             colHMsgLen = new ColumnHeader();
@@ -56,6 +56,7 @@
             channelTxBox = new TextBox();
             baudRateTxBox = new TextBox();
             unInitBtn = new Button();
+            listClearBtn = new Button();
             writeGroupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -218,7 +219,7 @@
             // 
             // initBtn
             // 
-            initBtn.Location = new Point(394, 24);
+            initBtn.Location = new Point(403, 24);
             initBtn.Name = "initBtn";
             initBtn.Size = new Size(75, 23);
             initBtn.TabIndex = 7;
@@ -235,7 +236,6 @@
             selectChennel.Name = "selectChennel";
             selectChennel.Size = new Size(121, 23);
             selectChennel.TabIndex = 8;
-            selectChennel.SelectedIndex = 0;
             // 
             // selectBaudRate
             // 
@@ -246,7 +246,6 @@
             selectBaudRate.Name = "selectBaudRate";
             selectBaudRate.Size = new Size(121, 23);
             selectBaudRate.TabIndex = 9;
-            selectBaudRate.SelectedIndex = 0;
             // 
             // channelTxBox
             // 
@@ -275,12 +274,24 @@
             unInitBtn.TabIndex = 10;
             unInitBtn.Text = "언초기화";
             unInitBtn.UseVisualStyleBackColor = true;
+            unInitBtn.Click += unInitBtn_Click;
+            // 
+            // listClearBtn
+            // 
+            listClearBtn.Location = new Point(403, 53);
+            listClearBtn.Name = "listClearBtn";
+            listClearBtn.Size = new Size(156, 23);
+            listClearBtn.TabIndex = 11;
+            listClearBtn.Text = "메시지 비우기";
+            listClearBtn.UseVisualStyleBackColor = true;
+            listClearBtn.Click += listClearBtn_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(578, 473);
+            Controls.Add(listClearBtn);
             Controls.Add(unInitBtn);
             Controls.Add(selectBaudRate);
             Controls.Add(selectChennel);
@@ -291,6 +302,7 @@
             Controls.Add(channelTxBox);
             Controls.Add(msgViewList);
             Controls.Add(writeGroupBox);
+            DoubleBuffered = true;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "PCanMiniView";
@@ -329,5 +341,6 @@
         private TextBox channelTxBox;
         private TextBox baudRateTxBox;
         private Button unInitBtn;
+        private Button listClearBtn;
     }
 }

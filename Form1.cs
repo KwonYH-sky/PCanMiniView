@@ -14,6 +14,8 @@ namespace PCanMiniView
         public Form1()
         {
             InitializeComponent();
+            selectChennel.SelectedIndex = 0;
+            selectBaudRate.SelectedIndex = 0;
         }
 
         private void ProcessMessage(PcanMessage msg, ulong msgTimeStamp = 0)
@@ -50,7 +52,7 @@ namespace PCanMiniView
 
             byte[] dataByteArr = data.Split(' ').Select(s => Convert.ToByte(s, 16)).ToArray();
 
-            for (int i = 0; i < msg.Data.MaxLength; i++)
+            for (int i = 0; i < dataByteArr.Length; i++)
             {
                 msg.Data[i] = dataByteArr[i];
             }
@@ -100,10 +102,14 @@ namespace PCanMiniView
 
             foreach (CanMessage lstMsg in canMessages)
             {
+                string[] dataArr = BitConverter.ToString(lstMsg.Msg.Data).Split("-");
+
                 lstItem = msgViewList.Items[lstMsg.MsgIdx];
 
                 lstItem.SubItems[2].Text = lstMsg.Msg.Length.ToString();
-                lstItem.SubItems[3].Text = BitConverter.ToString(lstMsg.Msg.Data).Replace("-", " ");
+                lstItem.SubItems[3].Text = "";
+                for (int i = 0; i < lstMsg.Msg.Length; i++) lstItem.SubItems[3].Text += dataArr[i] + " ";
+                lstItem.SubItems[3].Text.Trim();
                 lstItem.SubItems[4].Text = ((lstMsg.MsgTime - lstMsg.MsgPrevTime) * 0.001).ToString("F1");
                 lstItem.SubItems[5].Text = lstMsg.MsgCount.ToString();
             }
@@ -213,7 +219,6 @@ namespace PCanMiniView
             {
                 Api.GetErrorText(result, out var errorText);
                 MessageBox.Show("초기화가 실패했습니다. \n에러메시지: " + errorText, "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Close();
             }
             else
             {
@@ -228,6 +233,27 @@ namespace PCanMiniView
                 readTimer.Start();
                 viewTimer.Start();
             }
+        }
+
+        private void unInitBtn_Click(object sender, EventArgs e)
+        {
+            readTimer.Stop();
+            viewTimer.Stop();
+            Api.Uninitialize(channel);
+
+            canMessages.Clear();
+            msgViewList.Items.Clear();
+
+            selectBaudRate.Enabled = true;
+            selectChennel.Enabled = true;
+            initBtn.Enabled = true;
+            unInitBtn.Enabled = false;
+        }
+
+        private void listClearBtn_Click(object sender, EventArgs e)
+        {
+            canMessages.Clear();
+            msgViewList.Items.Clear();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Peak.Can.Basic;
+using System.Reflection;
 
 namespace PCanMiniView
 {
